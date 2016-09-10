@@ -1,3 +1,4 @@
+from string import ascii_letters
 import requests
 from bs4 import BeautifulSoup
 from fake_useragent import UserAgent
@@ -15,7 +16,7 @@ def getVideoUrl(word):
 # queries https://www.signingsavvy.com for the given word
 # and returns the URL to this word's page, or None if word not found
 def querySigningsavvy(word):
-    assert(word.isalpha())
+    assert(isWord(word))
 
     word = word.upper()
     domain = "https://www.signingsavvy.com/"
@@ -64,3 +65,7 @@ def getWebpageSource(url):
     headers = { "Connection": "close", "User-Agent": ua.random }
     r = requests.get(url, headers = headers)
     return BeautifulSoup(r.text, "html.parser")
+
+# checks if a given string contains only letters or apostrophes
+def isWord(word):
+    return not any(c for c in word if c not in ascii_letters + "'")
