@@ -11,6 +11,8 @@ lib-cov
 pids
 logs
 results
+scripts/output
+scripts/temp
 tmp
 
 #Build
