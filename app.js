@@ -45,7 +45,7 @@ words.once("child_changed", function (snapshot) {
       args: words[i]
     };
 
-    python.run('./scraper/AslVideoScraper.py', options, function (err, results) {
+    python.run('./scripts/AslVideoScraper.py', options, function (err, results) {
       if (err) return err;
       if (results[0] && results[0] != 'None') {
         console.log(results[0]);
