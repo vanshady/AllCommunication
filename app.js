@@ -23,8 +23,38 @@ const vcapServices = require('vcap_services');
 const extend = require('util')._extend;
 const watson = require('watson-developer-cloud');
 const bluemix = require('./config/bluemix');
-const i18n = require('i18next');
+const python = require('python-shell');
+const firebase = require("firebase");
 
+const firebaseConfig = {
+  apiKey: "AIzaSyCt2Gn5AsmXi_GId_0pWI4Lz7SGkjOZSVM",
+  authDomain: "allcommunication-143001.firebaseapp.com",
+  databaseURL: "https://allcommunication-143001.firebaseio.com",
+  storageBucket: "allcommunication-143001.appspot.com",
+};
+firebase.initializeApp(firebaseConfig);
+// As an admin, the app has access to read and write all data, regardless of Security Rules
+var db = firebase.database();
+var ref = db.ref("words");
+ref.once("child_changed", function(snapshot) {
+  var text = snapshot.val();
+  console.log(snapshot.val());
+  var words = text.split(" ");
+  for (i = 0; i < words.length; i++) {
+    // console.log(words[i]);
+    var options = {
+      args : words[i]
+    };
+    console.log('options');
+    console.log(options);
+    python.run('./scraper/AslVideoScraper.py', options, function(err, results){
+      console.log('python run');
+      console.log('err');console.log(err);
+      if (err) return err;
+      console.log(results);
+    });
+  };
+});
 /**
  * Load environment variables from .env file, where API keys and passwords are configured.
  */
@@ -246,29 +276,20 @@ app.post('/api/speech/token', function (req, res, next) {
  */
 app.use(errorHandler());
 
-var wordObj = require('./models/wordObject')
+// var wordObj = require('./models/wordObject')
 
-var words = text.split(" ");
+// var words = text.split(" ");
 
-var newWordObj = wordObj({
-  text: 'you',
-  link: 'www.google.com'
-})
+// var newWordObj = wordObj({
+//   text: 'you',
+//   link: 'www.google.com'
+// })
 
-newWordObj.save((function (err) {
-  if (err) throw err;
+// newWordObj.save((function (err) {
+//   if (err) throw err;
 
-  console.log('wordObject created!');
-}));
-
-for (i = 0; i < words.length; i++) {
-  console.log(words[i]);
-  wordObj.find({ text: words[i] }, function (err, obj) {
-    if (err) throw err;
-
-    console.log(obj);
-  });
-};
+//   console.log('wordObject created!');
+// }));
 
 /**
  * Start Express server.

@@ -1,4 +1,5 @@
 import requests
+import sys
 from bs4 import BeautifulSoup
 from fake_useragent import UserAgent
 
@@ -64,3 +65,6 @@ def getWebpageSource(url):
     headers = { "Connection": "close", "User-Agent": ua.random }
     r = requests.get(url, headers = headers)
     return BeautifulSoup(r.text, "html.parser")
+print('test python')
+print(getVideoUrl(sys.argv[1]))
+print(sys.argv[1])
