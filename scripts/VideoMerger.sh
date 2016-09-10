@@ -3,8 +3,9 @@
 # usage:
 # sh VideoMerger.sh [url0] [url1] [url2] [url3] ... [url n] [outputFileName]
 
-# takes in urls to videos on signingsavvy.com, downloads them and concats
-# outputs in ./output folder
+# takes in urls to videos on signingsavvy.com, downloads and concats them
+# outputs at ./output/outputFileName
+# silently overwrites if file name already exists
 
 mkdir -p temp
 mkdir -p output
@@ -31,7 +32,14 @@ do
     intermediates="${intermediates}${file}|"
 done
 
-ffmpeg -y -i "concat:${intermediates}" -c copy ../output/${@: -1}
+outputName=${@: -1}
+
+if ([[ ${outputName} == https://www.signingsavvy.com/signs/mp4/* ]]) then
+    outputName="output.mp4"
+    echo "[WARNING] No ouput file name specified. Outputs to output.mp4."
+fi
+
+ffmpeg -y -i "concat:${intermediates}" -c copy ../output/${outputName}
 
 rm *.mp4
 rm intermediate_*.ts
