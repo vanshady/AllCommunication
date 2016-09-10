@@ -57,10 +57,11 @@ words.once("child_changed", function (snapshot) {
     });
   };
 });
-
-var L = ['https://www.signingsavvy.com/signs/mp4/9/9274.mp4', 'https://www.signingsavvy.com/signs/mp4/7/7099.mp4'];
+var L = [];
+links.on('value', function (snap) { L = snap.val(); });
 const spawn = require('child_process').spawn;
-const res = spawn('sh', ['scripts/VideoMerger.sh', L[0], L[1], 'output.mp4']);
+var args = (['scripts/VideoMerger.sh'].concat(L)).concat(['output.mp4']);
+const res = spawn('sh', args);
 
 res.stdout.on('data', (data) => {
   console.log('successfully wrote file');
