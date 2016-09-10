@@ -241,9 +241,6 @@ app.post('/api/speech/token', function (req, res, next) {
     });
 });
 
-// error-handler settings
-require('./config/error-handler')(app);
-
 /**
  * Error Handler.
  */
