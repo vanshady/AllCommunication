@@ -10,9 +10,11 @@ lib-cov
 
 pids
 logs
+output
 results
 scripts/output
 scripts/temp
+temp
 tmp
 
 #Build
