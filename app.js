@@ -57,6 +57,17 @@ words.once("child_changed", function (snapshot) {
     });
   };
 });
+
+var L = ['https://www.signingsavvy.com/signs/mp4/9/9274.mp4', 'https://www.signingsavvy.com/signs/mp4/7/7099.mp4'];
+const spawn = require('child_process').spawn;
+const res = spawn('sh', ['scripts/VideoMerger.sh', L[0], L[1], 'output.mp4']);
+
+res.stdout.on('data', (data) => {
+  console.log('successfully wrote file');
+});
+
+console.log("here");
+
 /**
  * Load environment variables from .env file, where API keys and passwords are configured.
  */
