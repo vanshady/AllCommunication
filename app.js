@@ -50,10 +50,10 @@ const app = express();
 app.enable('trust proxy');
 
 var config = extend({
-    version: 'v1',
-    "url": "https://stream.watsonplatform.net/speech-to-text/api",
-    "username": "f10cdd68-c1f4-4a06-96fc-ed15ab867f10",
-    "password": "wZbS5lNtI5YM"
+  version: 'v1',
+  "url": "https://stream.watsonplatform.net/speech-to-text/api",
+  "username": "f10cdd68-c1f4-4a06-96fc-ed15ab867f10",
+  "password": "wZbS5lNtI5YM"
 }, vcapServices.getCredentials('speech_to_text'));
 
 var authService = watson.authorization(config);
@@ -112,13 +112,13 @@ app.use((req, res, next) => {
   res.locals.user = req.user;
   next();
 });
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   // After successful login, redirect back to the intended page
   if (!req.user &&
-      req.path !== '/login' &&
-      req.path !== '/signup' &&
-      !req.path.match(/^\/auth/) &&
-      !req.path.match(/\./)) {
+    req.path !== '/login' &&
+    req.path !== '/signup' &&
+    !req.path.match(/^\/auth/) &&
+    !req.path.match(/\./)) {
     req.session.returnTo = req.path;
   }
   next();
@@ -228,17 +228,17 @@ app.get('/auth/pinterest/callback', passport.authorize('pinterest', { failureRed
 });
 
 app.get('/speech', function (req, res) {
-    res.render('speech', { ct: req._csrfToken });
+  res.render('speech', { ct: req._csrfToken });
 });
 
 // Get token using your credentials
 app.post('/api/speech/token', function (req, res, next) {
-    authService.getToken({ url: config.url }, function (err, token) {
-        if (err)
-            next(err);
-        else
-            res.send(token);
-    });
+  authService.getToken({ url: config.url }, function (err, token) {
+    if (err)
+      next(err);
+    else
+      res.send(token);
+  });
 });
 
 /**
@@ -255,20 +255,20 @@ var newWordObj = wordObj({
   link: 'www.google.com'
 })
 
-newWordObj.save((function(err) {
+newWordObj.save((function (err) {
   if (err) throw err;
 
   console.log('wordObject created!');
 }));
 
-for(i = 0; i < words.length; i++){
-    console.log(words[i]);
-    wordObj.find({text: words[i]}, function(err, obj){
-      if(err) throw err;
+for (i = 0; i < words.length; i++) {
+  console.log(words[i]);
+  wordObj.find({ text: words[i] }, function (err, obj) {
+    if (err) throw err;
 
-      console.log(obj);
-    });
-  };
+    console.log(obj);
+  });
+};
 
 /**
  * Start Express server.

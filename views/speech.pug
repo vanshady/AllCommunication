@@ -73,3 +73,23 @@ block script
           }, 1000);
         }
       }
+
+    
+    script(src="https://www.gstatic.com/firebasejs/3.3.2/firebase.js")
+    script.
+      // Initialize Firebase
+      var config = {
+        apiKey: "AIzaSyCt2Gn5AsmXi_GId_0pWI4Lz7SGkjOZSVM",
+        authDomain: "allcommunication-143001.firebaseapp.com",
+        databaseURL: "https://allcommunication-143001.firebaseio.com",
+        storageBucket: "allcommunication-143001.appspot.com",
+      };
+      firebase.initializeApp(config);
+      var database = firebase.database();
+
+      function writeUserData(text) {
+        firebase.database().ref('words/').set({
+          word: text,
+          link: 'www.google.com'
+        });
+      }
