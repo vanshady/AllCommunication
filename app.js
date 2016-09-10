@@ -37,22 +37,23 @@ firebase.initializeApp(firebaseConfig);
 var db = firebase.database();
 var words = db.ref("words");
 var links = db.ref("links");
-words.once("child_changed", function(snapshot) {
+words.once("child_changed", function (snapshot) {
   var text = snapshot.val();
-  console.log(snapshot.val());
-  var words = text.replace(/[^\w\s]|_/g, function ($1) { return ' ' + $1 + ' ';}).replace(/[ ]+/g, ' ').split(' ');
+  var words = text.replace(/[^\w\s]|_/g, function ($1) { return ' ' + $1 + ' '; }).replace(/[ ]+/g, ' ').split(' ');
   for (i = 0; i < words.length; i++) {
-    // console.log(words[i]);
     var options = {
-      args : words[i]
+      args: words[i]
     };
-    console.log('options');
-    console.log(options);
-    python.run('./scraper/AslVideoScraper.py', options, function(err, results){
-      console.log('python run');
-      console.log('err');console.log(err);
+
+    python.run('./scraper/AslVideoScraper.py', options, function (err, results) {
       if (err) return err;
-      console.log(results);
+      if (results[0] && results[0] != 'None') {
+        console.log(results[0]);
+        var list = [];
+        links.on('value', function (snap) { list = snap.val(); });
+        list.push(results[0]);
+        links.set(list);
+      }
     });
   };
 });
