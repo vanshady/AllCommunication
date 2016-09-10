@@ -812,11 +812,11 @@
                         evt.preventDefault();
                         var currentModel = localStorage.getItem("currentModel"),
                             currentlyDisplaying = localStorage.getItem("currentlyDisplaying");
-                        return "sample" == currentlyDisplaying || "fileupload" == currentlyDisplaying ? void showError("Currently another file is playing, please stop the file or wait until it finishes") : (localStorage.setItem("currentlyDisplaying", "record"), void(running ? (console.log("Stopping microphone, sending stop action message"), recordButton.removeAttr("style"), recordButton.find("img").attr("src", "images/microphone.svg"), $.publish("hardsocketstop"), mic.stop(), running = !1, localStorage.setItem("currentlyDisplaying", "false")) : ($("#resultsText").val(""), console.log("Not running, handleMicrophone()"), handleMicrophone(token, currentModel, mic, function(err) {
+                        return "sample" == currentlyDisplaying || "fileupload" == currentlyDisplaying ? void showError("Currently another file is playing, please stop the file or wait until it finishes") : (localStorage.setItem("currentlyDisplaying", "record"), void(running ? (console.log("Stopping microphone, sending stop action message"), recordButton.removeAttr("style"), recordButton.css("width", "100%"), recordButton.find("img").attr("src", "images/microphone.svg"), $.publish("hardsocketstop"), mic.stop(), running = !1, localStorage.setItem("currentlyDisplaying", "false")) : ($("#resultsText").val(""), console.log("Not running, handleMicrophone()"), handleMicrophone(token, currentModel, mic, function(err) {
                             if (err) {
                                 var msg = "Error: " + err.message;
                                 console.log(msg), showError(msg), running = !1, localStorage.setItem("currentlyDisplaying", "false")
-                            } else recordButton.css("background-color", "#d74108"), recordButton.find("img").attr("src", "images/stop.svg"), console.log("starting mic"), mic.record(), running = !0
+                            } else recordButton.css("background-color", "#d74108"), recordButton.find("img").attr("src", "images/stop.svg"), recordButton.css("width", "100%"), console.log("starting mic"), mic.record(), running = !0
                         }))))
                     }
                 }())
