@@ -89,7 +89,6 @@ block script
 
       function writeUserData(text) {
         firebase.database().ref('words/').set({
-          word: text,
-          link: 'www.google.com'
+          word: text
         });
       }
