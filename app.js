@@ -35,11 +35,12 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 // As an admin, the app has access to read and write all data, regardless of Security Rules
 var db = firebase.database();
-var ref = db.ref("words");
-ref.once("child_changed", function(snapshot) {
+var words = db.ref("words");
+var links = db.ref("links");
+words.once("child_changed", function(snapshot) {
   var text = snapshot.val();
   console.log(snapshot.val());
-  var words = text.split(" ");
+  var words = text.replace(/[^\w\s]|_/g, function ($1) { return ' ' + $1 + ' ';}).replace(/[ ]+/g, ' ').split(' ');
   for (i = 0; i < words.length; i++) {
     // console.log(words[i]);
     var options = {

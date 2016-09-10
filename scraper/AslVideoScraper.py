@@ -16,7 +16,8 @@ def getVideoUrl(word):
 # queries https://www.signingsavvy.com for the given word
 # and returns the URL to this word's page, or None if word not found
 def querySigningsavvy(word):
-    assert(word.isalpha())
+    if (not word.isalpha()):
+      return None
 
     word = word.upper()
     domain = "https://www.signingsavvy.com/"
@@ -65,6 +66,4 @@ def getWebpageSource(url):
     headers = { "Connection": "close", "User-Agent": ua.random }
     r = requests.get(url, headers = headers)
     return BeautifulSoup(r.text, "html.parser")
-print('test python')
 print(getVideoUrl(sys.argv[1]))
-print(sys.argv[1])
