@@ -249,10 +249,6 @@ require('./config/error-handler')(app);
  */
 app.use(errorHandler());
 
-/**
- * Start Express server.
- */
-
 var wordObj = require('./models/wordObject')
 
 var words = text.split(" ");
@@ -277,6 +273,9 @@ for(i = 0; i < words.length; i++){
     });
   };
 
+/**
+ * Start Express server.
+ */
 app.listen(app.get('port'), () => {
   console.log('%s Express server listening on port %d in %s mode.', chalk.green('✓'), app.get('port'), app.get('env'));
   //wait for text to come
