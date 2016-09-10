@@ -1,3 +1,4 @@
+from string import ascii_letters
 import requests
 import sys
 from bs4 import BeautifulSoup
@@ -18,6 +19,7 @@ def getVideoUrl(word):
 def querySigningsavvy(word):
     if (not word.isalpha()):
       return None
+    # assert(isWord(word))
 
     word = word.upper()
     domain = "https://www.signingsavvy.com/"
@@ -67,3 +69,8 @@ def getWebpageSource(url):
     r = requests.get(url, headers = headers)
     return BeautifulSoup(r.text, "html.parser")
 print(getVideoUrl(sys.argv[1]))
+
+# checks if a given string contains only letters or apostrophes
+# def isWord(word):
+#     return not any(c for c in word if c not in ascii_letters + "'")
+
