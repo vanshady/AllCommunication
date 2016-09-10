@@ -648,3 +648,9 @@ exports.getGoogleMaps = (req, res, next) => {
     title: 'Google Maps API'
   });
 };
+
+exports.getChat = (req, res, next) => {
+  res.render('api/chat', {
+    title: 'Chat'
+  })
+};
