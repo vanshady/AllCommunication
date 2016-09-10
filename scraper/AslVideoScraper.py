@@ -1,6 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 from fake_useragent import UserAgent
+import sys
 
 # only call this method from outside
 # gets link to an ASL video of the given word, or None if word not found
@@ -16,12 +17,10 @@ def getVideoUrl(word):
 # and returns the URL to this word's page, or None if word not found
 def querySigningsavvy(word):
     assert(word.isalpha())
-
     word = word.upper()
     domain = "https://www.signingsavvy.com/"
     queryUrl = domain + "search/" + word
     soup = getWebpageSource(queryUrl)
-
     queryResults = soup.findAll("div", {"class": "search_results"})
 
     wordTags = []
@@ -32,7 +31,6 @@ def querySigningsavvy(word):
 
     if (len(wordTags) == 0):
         return None
-
     # TODO:
     # there may be multiple entries for the same word if it has more than
     # one meaning: we'll need to select one; but for now, use the first result
@@ -64,3 +62,5 @@ def getWebpageSource(url):
     headers = { "Connection": "close", "User-Agent": ua.random }
     r = requests.get(url, headers = headers)
     return BeautifulSoup(r.text, "html.parser")
+
+print(getVideoUrl(sys.argv[1]))
