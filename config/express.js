@@ -31,5 +31,5 @@ module.exports = function (app) {
   // Configure Express
   app.use(bodyParser.urlencoded({ extended: true, limit: '1mb' }));
   app.use(bodyParser.json({ limit: '1mb' }));
-  app.use(express.static(__dirname + '/../public'));
+  app.use(express.static(__dirname + '/../speech_public'));
 };
