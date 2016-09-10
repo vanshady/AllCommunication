@@ -19,7 +19,44 @@ const expressValidator = require('express-validator');
 const sass = require('node-sass-middleware');
 const multer = require('multer');
 const upload = multer({ dest: path.join(__dirname, 'uploads') });
+const vcapServices = require('vcap_services');
+const extend = require('util')._extend;
+const watson = require('watson-developer-cloud');
+const bluemix = require('./config/bluemix');
+const python = require('python-shell');
+const firebase = require("firebase");
 
+const firebaseConfig = {
+  apiKey: "AIzaSyCt2Gn5AsmXi_GId_0pWI4Lz7SGkjOZSVM",
+  authDomain: "allcommunication-143001.firebaseapp.com",
+  databaseURL: "https://allcommunication-143001.firebaseio.com",
+  storageBucket: "allcommunication-143001.appspot.com",
+};
+firebase.initializeApp(firebaseConfig);
+// As an admin, the app has access to read and write all data, regardless of Security Rules
+var db = firebase.database();
+var words = db.ref("words");
+var links = db.ref("links");
+words.once("child_changed", function (snapshot) {
+  var text = snapshot.val();
+  var words = text.replace(/[^\w\s]|_/g, function ($1) { return ' ' + $1 + ' '; }).replace(/[ ]+/g, ' ').split(' ');
+  for (i = 0; i < words.length; i++) {
+    var options = {
+      args: words[i]
+    };
+
+    python.run('./scripts/AslVideoScraper.py', options, function (err, results) {
+      if (err) return err;
+      if (results[0] && results[0] != 'None') {
+        console.log(results[0]);
+        var list = [];
+        links.on('value', function (snap) { list = snap.val(); });
+        list.push(results[0]);
+        links.set(list);
+      }
+    });
+  };
+});
 /**
  * Load environment variables from .env file, where API keys and passwords are configured.
  */
@@ -42,6 +79,16 @@ const passportConfig = require('./config/passport');
  * Create Express server.
  */
 const app = express();
+app.enable('trust proxy');
+
+var config = extend({
+  version: 'v1',
+  "url": "https://stream.watsonplatform.net/speech-to-text/api",
+  "username": "f10cdd68-c1f4-4a06-96fc-ed15ab867f10",
+  "password": "wZbS5lNtI5YM"
+}, vcapServices.getCredentials('speech_to_text'));
+
+var authService = watson.authorization(config);
 
 var text = "I love you";
 
@@ -84,26 +131,26 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
-app.use((req, res, next) => {
-  if (req.path === '/api/upload') {
-    next();
-  } else {
-    lusca.csrf()(req, res, next);
-  }
-});
+// app.use((req, res, next) => {
+//   if (req.path === '/api/upload') {
+//     next();
+//   } else {
+//     lusca.csrf()(req, res, next);
+//   }
+// });
 app.use(lusca.xframe('SAMEORIGIN'));
 app.use(lusca.xssProtection(true));
 app.use((req, res, next) => {
   res.locals.user = req.user;
   next();
 });
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   // After successful login, redirect back to the intended page
   if (!req.user &&
-      req.path !== '/login' &&
-      req.path !== '/signup' &&
-      !req.path.match(/^\/auth/) &&
-      !req.path.match(/\./)) {
+    req.path !== '/login' &&
+    req.path !== '/signup' &&
+    !req.path.match(/^\/auth/) &&
+    !req.path.match(/\./)) {
     req.session.returnTo = req.path;
   }
   next();
@@ -212,39 +259,43 @@ app.get('/auth/pinterest/callback', passport.authorize('pinterest', { failureRed
   res.redirect('/api/pinterest');
 });
 
+app.get('/speech', function (req, res) {
+  res.render('speech', { ct: req._csrfToken });
+});
+
+// Get token using your credentials
+app.post('/api/speech/token', function (req, res, next) {
+  authService.getToken({ url: config.url }, function (err, token) {
+    if (err)
+      next(err);
+    else
+      res.send(token);
+  });
+});
+
 /**
  * Error Handler.
  */
 app.use(errorHandler());
 
+// var wordObj = require('./models/wordObject')
+
+// var words = text.split(" ");
+
+// var newWordObj = wordObj({
+//   text: 'you',
+//   link: 'www.google.com'
+// })
+
+// newWordObj.save((function (err) {
+//   if (err) throw err;
+
+//   console.log('wordObject created!');
+// }));
+
 /**
  * Start Express server.
  */
-
-var wordObj = require('./models/wordObject')
-
-var words = text.split(" ");
-
-var newWordObj = wordObj({
-  text: 'you',
-  link: 'www.google.com'
-})
-
-newWordObj.save((function(err) {
-  if (err) throw err;
-
-  console.log('wordObject created!');
-}));
-
-for(i = 0; i < words.length; i++){
-    console.log(words[i]);
-    wordObj.find({text: words[i]}, function(err, obj){
-      if(err) throw err;
-
-      console.log(obj);
-    });
-  };
-
 app.listen(app.get('port'), () => {
   console.log('%s Express server listening on port %d in %s mode.', chalk.green('✓'), app.get('port'), app.get('env'));
   //wait for text to come
