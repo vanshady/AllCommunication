@@ -18,14 +18,8 @@ def getVideoUrl(word):
 # queries https://www.signingsavvy.com for the given word
 # and returns the URL to this word's page, or None if word not found
 def querySigningsavvy(word):
-<<<<<<< HEAD:scraper/AslVideoScraper.py
-    assert(word.isalpha())
-=======
-    if (not word.isalpha()):
-      return None
-    # assert(isWord(word))
+    assert(isWord(word))
 
->>>>>>> origin/master:scripts/AslVideoScraper.py
     word = word.upper()
     domain = "https://www.signingsavvy.com/"
     queryUrl = domain + "search/" + word
@@ -71,14 +65,9 @@ def getWebpageSource(url):
     headers = { "Connection": "close", "User-Agent": ua.random }
     r = requests.get(url, headers = headers)
     return BeautifulSoup(r.text, "html.parser")
-<<<<<<< HEAD:scraper/AslVideoScraper.py
-
-print(getVideoUrl(sys.argv[1]))
-=======
-print(getVideoUrl(sys.argv[1]))
 
 # checks if a given string contains only letters or apostrophes
-# def isWord(word):
-#     return not any(c for c in word if c not in ascii_letters + "'")
+def isWord(word):
+    return not any(c for c in word if c not in ascii_letters + "'")
 
->>>>>>> origin/master:scripts/AslVideoScraper.py
+print(getVideoUrl(sys.argv[1]))
