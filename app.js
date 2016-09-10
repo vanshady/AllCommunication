@@ -58,6 +58,8 @@ var config = extend({
 
 var authService = watson.authorization(config);
 
+var text = "I love you";
+
 /**
  * Connect to MongoDB.
  */
@@ -250,8 +252,34 @@ app.use(errorHandler());
 /**
  * Start Express server.
  */
+
+var wordObj = require('./models/wordObject')
+
+var words = text.split(" ");
+
+var newWordObj = wordObj({
+  text: 'you',
+  link: 'www.google.com'
+})
+
+newWordObj.save((function(err) {
+  if (err) throw err;
+
+  console.log('wordObject created!');
+}));
+
+for(i = 0; i < words.length; i++){
+    console.log(words[i]);
+    wordObj.find({text: words[i]}, function(err, obj){
+      if(err) throw err;
+
+      console.log(obj);
+    });
+  };
+
 app.listen(app.get('port'), () => {
   console.log('%s Express server listening on port %d in %s mode.', chalk.green('✓'), app.get('port'), app.get('env'));
+  //wait for text to come
 });
 
 module.exports = app;
