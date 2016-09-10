@@ -392,7 +392,7 @@
                                 var err = new Error("Cannot reach server");
                                 return void callback(null, err)
                             }
-                            var url = "/api/token",
+                            var url = "/api/speech/token",
                                 tokenRequest = new XMLHttpRequest;
                             tokenRequest.open("POST", url, !0), tokenRequest.setRequestHeader("csrf-token", $('meta[name="ct"]').attr("content")), tokenRequest.onreadystatechange = function() {
                                 if (4 === tokenRequest.readyState)

@@ -24,12 +24,12 @@ var config = extend({
 
 var authService = watson.authorization(config);
 
-app.get('/', function (req, res) {
+app.get('/speech', function (req, res) {
     res.render('speech', { ct: req._csrfToken });
 });
 
 // Get token using your credentials
-app.post('/api/token', function (req, res, next) {
+app.post('/api/speech/token', function (req, res, next) {
     authService.getToken({ url: config.url }, function (err, token) {
         if (err)
             next(err);

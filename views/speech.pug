@@ -1,0 +1,109 @@
+doctype html
+html(lang='en')
+  head
+    meta(charset='utf-8')
+    meta(http-equiv='X-UA-Compatible', content='IE=edge')
+    meta(name='viewport', content='width=device-width, initial-scale=1')
+    meta(name='ct', content='<%= ct %>')
+    link(rel='shortcut icon', href='/images/favicon.ico', type='image/x-icon')
+    title SpeechHacks
+    link(href='css/watson-bootstrap-style.css', rel='stylesheet')
+    link(href='css/style.css', rel='stylesheet')
+  body
+    // Step 1 Section
+    .container
+      // Step 3 Section
+      // First column of inputs
+      .row
+        .col-lg-12.col-md-12.col-sm-12
+          h2 Improve Your Speech Skills
+        // .col-lg-12
+        .row
+          .col-lg-12.col-md-12.col-sm-12
+            .audioParent
+              audio.audio(style='display:none', controls='')
+                | Your browser does not support the audio element.
+        // row
+        .row
+          nav.navbar.navbar-inverse(style='width:100%')
+            ul.navbar-text
+              li#recordButton.button-row.nav-inverse-color(style='width:20%', onclick='updateTimeCount()')
+                img#microphoneIcon.icon(src='images/microphone.svg')
+                span.nav-label Record Audio
+              li.file-upload.button-row.nav-inverse-color(style='width:20%')
+                #fileUploadTarget
+                  img.icon(src='images/upload.svg')
+                  span.nav-label Select File
+              li.file-upload.button-row.nav-inverse-color(style='width:20%')
+                #StartButton
+                  img.icon(src='images/drop-down-arrow.svg')
+                  span.nav-label Save File
+              li.file-upload.button-row.nav-inverse-color(style='width:20%')
+                #StartButton(onclick='analyze()')
+                  img.icon(src='images/search36.svg')
+                  span.nav-label Analyze
+              li.file-upload.button-row.nav-inverse-color(style='width:20%')
+                #StartButton(onclick='meet()')
+                  img.icon(src='images/business11.svg')
+                  span.nav-label Stream
+        // Tab panes
+        .row(style='  margin: 0;')
+          .col-lg-12.col-md-12.col-sm-12(style='padding: 0;')
+            .well
+              form.form-horizontal(autocomplete='off')
+                div(role='tabpanel')
+                  .hr-tab
+                  fieldset
+                    .row.error-row
+                      .col-lg-12
+                        #errorAlert
+                          span#errorMessage
+                          a#errorClose.pull-right(href='#') ×
+                    .row.notification-row
+                      .col-lg-12
+                        #notificationAlert
+                          span#notificationMessage
+                          a#notificationClose.pull-right(href='#') ×
+                    .form-group.row.tabpanel-row
+                      .col-lg-12
+                        .tab-content
+                          #home2.tab-pane.active(role='tabpanel')
+                            textarea#resultsText(readonly='', name='resultsText')
+                          #profile2.tab-pane(role='tabpanel')
+                            textarea#resultsJSON(readonly='')
+                          .text-right.timeCountFootnote
+                            span.timeCount.small
+                            span.small
+                      // .col-lg-12
+          // /.well
+        // /.tabpanel
+        .row
+          .col-md-12
+            .panel.panel-default
+              .panel-heading(style='display:none')
+                h3 Metadata
+                span.pull-right.clickable
+                  i.caret-up(style='  margin-top: -1.3em;')
+              .panel-body
+                // Table
+                .table-scroll(style='display:none')
+                  table#metadataTable
+                    thead
+                      tr.table-header-row
+                        th WORD
+                        th START TIME(sec)
+                        th END TIME(sec)
+                        th CONFIDENCE
+                    tbody#metadataTableBody
+                div
+                  h2.hesitation(style='width:70%') Confidence Score:
+                  input#StartButton.btn.btn-block.analysis-btn(style='float:right', type='button', value='Share the Script', onclick='save();generateMoxtra()')
+                // END Table
+                .alt-hypothesis
+                  h5 Did you mean?
+                  .hypotheses
+                    ol
+          // /.col
+        // /.container
+        // for file upload dialog in toolbar
+        input#fileUploadDialog(style='display:none', type='file')

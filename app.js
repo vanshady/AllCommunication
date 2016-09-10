@@ -19,6 +19,11 @@ const expressValidator = require('express-validator');
 const sass = require('node-sass-middleware');
 const multer = require('multer');
 const upload = multer({ dest: path.join(__dirname, 'uploads') });
+const vcapServices = require('vcap_services');
+const extend = require('util')._extend;
+const watson = require('watson-developer-cloud');
+const bluemix = require('./config/bluemix');
+const i18n = require('i18next');
 
 /**
  * Load environment variables from .env file, where API keys and passwords are configured.
@@ -42,6 +47,16 @@ const passportConfig = require('./config/passport');
  * Create Express server.
  */
 const app = express();
+app.enable('trust proxy');
+
+var config = extend({
+    version: 'v1',
+    "url": "https://stream.watsonplatform.net/speech-to-text/api",
+    "username": "f10cdd68-c1f4-4a06-96fc-ed15ab867f10",
+    "password": "wZbS5lNtI5YM"
+}, vcapServices.getCredentials('speech_to_text'));
+
+var authService = watson.authorization(config);
 
 /**
  * Connect to MongoDB.
@@ -60,7 +75,7 @@ mongoose.connection.on('error', () => {
  */
 app.set('port', process.env.PORT || 3000);
 app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'pug');
+app.set('view engine', 'ejs');
 app.use(compression());
 app.use(sass({
   src: path.join(__dirname, 'public'),
@@ -82,13 +97,13 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
-app.use((req, res, next) => {
-  if (req.path === '/api/upload') {
-    next();
-  } else {
-    lusca.csrf()(req, res, next);
-  }
-});
+// app.use((req, res, next) => {
+//   if (req.path === '/api/upload') {
+//     next();
+//   } else {
+//     lusca.csrf()(req, res, next);
+//   }
+// });
 app.use(lusca.xframe('SAMEORIGIN'));
 app.use(lusca.xssProtection(true));
 app.use((req, res, next) => {
@@ -209,6 +224,23 @@ app.get('/auth/pinterest', passport.authorize('pinterest', { scope: 'read_public
 app.get('/auth/pinterest/callback', passport.authorize('pinterest', { failureRedirect: '/login' }), (req, res) => {
   res.redirect('/api/pinterest');
 });
+
+app.get('/speech', function (req, res) {
+    res.render('speech', { ct: req._csrfToken });
+});
+
+// Get token using your credentials
+app.post('/api/speech/token', function (req, res, next) {
+    authService.getToken({ url: config.url }, function (err, token) {
+        if (err)
+            next(err);
+        else
+            res.send(token);
+    });
+});
+
+// error-handler settings
+require('./config/error-handler')(app);
 
 /**
  * Error Handler.
