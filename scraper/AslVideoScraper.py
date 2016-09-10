@@ -58,7 +58,7 @@ def scrapeVideoUrl(wordPageUrl):
     assert(result.endswith(".mp4"))
     return result
 
-# gets a BeautifulSoup object of the gien url's source
+# gets a BeautifulSoup object of the given url's source
 def getWebpageSource(url):
     ua = UserAgent()
     headers = { "Connection": "close", "User-Agent": ua.random }
