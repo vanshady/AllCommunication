@@ -5,7 +5,7 @@ html
     meta(http-equiv='X-UA-Compatible', content='IE=edge')
     meta(name='viewport', content='width=device-width, initial-scale=1.0')
     meta(name='theme-color' content='#4DA5F4')
-    meta(name='csrf-token', content=_csrf)
+    //- meta(name='csrf-token', content=_csrf)
     title #{title} - Hackathon Starter
     block style
     link(rel='shortcut icon', href='/favicon.png')
@@ -23,7 +23,7 @@ html
     script(src='/js/lib/jquery-2.2.4.min.js')
     script(src='/js/lib/bootstrap.min.js')
     script(src='/js/main.js')
-
+    block script
     // Google Analytics: change UA-XXXXX-X to be your site's ID
     script.
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
