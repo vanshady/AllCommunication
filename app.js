@@ -24,7 +24,8 @@ const extend = require('util')._extend;
 const watson = require('watson-developer-cloud');
 const bluemix = require('./config/bluemix');
 const python = require('python-shell');
-const firebase = require("firebase");
+const firebase = require("firebase");  
+var easyrtc = require("easyrtc");
 
 const firebaseConfig = {
   apiKey: "AIzaSyCt2Gn5AsmXi_GId_0pWI4Lz7SGkjOZSVM",
@@ -79,6 +80,8 @@ const passportConfig = require('./config/passport');
  * Create Express server.
  */
 const app = express();
+var server = require('http').Server(app);
+
 app.enable('trust proxy');
 
 var config = extend({
@@ -102,6 +105,44 @@ mongoose.connection.on('connected', () => {
 mongoose.connection.on('error', () => {
   console.log('%s MongoDB connection error. Please make sure MongoDB is running.', chalk.red('✗'));
   process.exit();
+});
+
+// Start Socket.io so it attaches itself to Express server
+var io = require('socket.io').listen(server, {"log level":1});
+
+easyrtc.setOption("logLevel", "debug");
+
+// Overriding the default easyrtcAuth listener, only so we can directly access its callback
+easyrtc.events.on("easyrtcAuth", function(socket, easyrtcid, msg, socketCallback, callback) {
+    easyrtc.events.defaultListeners.easyrtcAuth(socket, easyrtcid, msg, socketCallback, function(err, connectionObj){
+        if (err || !msg.msgData || !msg.msgData.credential || !connectionObj) {
+            callback(err, connectionObj);
+            return;
+        }
+
+        connectionObj.setField("credential", msg.msgData.credential, {"isShared":false});
+
+        console.log("["+easyrtcid+"] Credential saved!", connectionObj.getFieldValueSync("credential"));
+
+        callback(err, connectionObj);
+    });
+});
+
+// To test, lets print the credential to the console for every room join!
+easyrtc.events.on("roomJoin", function(connectionObj, roomName, roomParameter, callback) {
+    console.log("["+connectionObj.getEasyrtcid()+"] Credential retrieved!", connectionObj.getFieldValueSync("credential"));
+    easyrtc.events.defaultListeners.roomJoin(connectionObj, roomName, roomParameter, callback);
+});
+
+// Start EasyRTC server
+var rtc = easyrtc.listen(app, io, null, function(err, rtcRef) {
+    console.log("Initiated");
+
+    rtcRef.events.on("roomCreate", function(appObj, creatorConnectionObj, roomName, roomOptions, callback) {
+        console.log("roomCreate fired! Trying to create: " + roomName);
+
+        appObj.events.defaultListeners.roomCreate(appObj, creatorConnectionObj, roomName, roomOptions, callback);
+    });
 });
 
 /**
@@ -273,6 +314,10 @@ app.post('/api/speech/token', function (req, res, next) {
   });
 });
 
+// app.get('/videochat', function (req, res) {
+//   res.sendFile('/public/video/video.html');
+// });
+
 /**
  * Error Handler.
  */
@@ -296,7 +341,7 @@ app.use(errorHandler());
 /**
  * Start Express server.
  */
-app.listen(app.get('port'), () => {
+server.listen(app.get('port'), () => {
   console.log('%s Express server listening on port %d in %s mode.', chalk.green('✓'), app.get('port'), app.get('env'));
   //wait for text to come
 });
