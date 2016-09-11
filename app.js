@@ -37,7 +37,9 @@ firebase.initializeApp(firebaseConfig);
 // As an admin, the app has access to read and write all data, regardless of Security Rules
 var db = firebase.database();
 var words = db.ref("words");
+words.remove();
 var links = db.ref("links");
+links.remove();
 words.once("child_changed", function (snapshot) {
   var text = snapshot.val();
   var words = text.replace(/[^\w\s]|_/g, function ($1) { return ' ' + $1 + ' '; }).replace(/[ ]+/g, ' ').split(' ');
@@ -52,7 +54,8 @@ words.once("child_changed", function (snapshot) {
         console.log(results[0]);
         var list = [];
         links.on('value', function (snap) { list = snap.val(); });
-        list.push(results[0]);
+        if (list) list.push(results[0]);
+        else list = [results[0]];
         links.set(list);
       }
     });
@@ -332,21 +335,6 @@ app.get('/api/videochat', apiController.getVideoChat);
  * Error Handler.
  */
 app.use(errorHandler());
-
-// var wordObj = require('./models/wordObject')
-
-// var words = text.split(" ");
-
-// var newWordObj = wordObj({
-//   text: 'you',
-//   link: 'www.google.com'
-// })
-
-// newWordObj.save((function (err) {
-//   if (err) throw err;
-
-//   console.log('wordObject created!');
-// }));
 
 /**
  * Start Express server.
