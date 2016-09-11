@@ -101,7 +101,7 @@ dictionary.on("child_added", function (snapshot) {
 var L = [];
 links.on('value', function (snap) { 
   L = snap.val(); 
-  const outputName = (L.toString()).concat('.mp4')
+  const outputName = (L.join()).concat('.mp4');
   var args = (['scripts/VideoMerger.sh'].concat(L)).concat([outputName]);
   console.log(args);
   const res = spawn('sh', args);
