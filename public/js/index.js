@@ -512,7 +512,7 @@
           var alternatives = msg.results[0].alternatives,
             text = msg.results[0].alternatives[0].transcript || "";
           if (text = text.replace(/%HESITATION\s/g, ""), text = text.replace(/(.)\1{2,}/g, ""), msg.results[0]["final"] && console.log("-> " + text), text = text.replace(/D_[^\s]+/g, ""), 0 === text.length || /^\s+$/.test(text)) return baseString;
-          msg.results && msg.results[0] && msg.results[0]["final"] ? (text = text.slice(0, -1), text = text.charAt(0).toUpperCase() + text.substring(1), text = text.trim() + ". ", baseString += text, $("#resultsText").val(baseString), writeUserData(baseString), showMetaData(alternatives[0]), alternativePrototype.showAlternatives(alternatives)) : (text = text.charAt(0).toUpperCase() + text.substring(1), $("#resultsText").val(baseString + text))
+          msg.results && msg.results[0] && msg.results[0]["final"] ? (text = text.slice(0, -1), text = text.charAt(0).toUpperCase() + text.substring(1), text = text.trim() + ". ", baseString += text, $("#resultsText").val(baseString), showMetaData(alternatives[0]), alternativePrototype.showAlternatives(alternatives)) : (text = text.charAt(0).toUpperCase() + text.substring(1), $("#resultsText").val(baseString + text))
         }
         return updateTextScroll(), baseString
       }, $.subscribe("clearscreen", function () {
@@ -808,7 +808,7 @@
             evt.preventDefault();
             var currentModel = localStorage.getItem("currentModel"),
               currentlyDisplaying = localStorage.getItem("currentlyDisplaying");
-            return "sample" == currentlyDisplaying || "fileupload" == currentlyDisplaying ? void showError("Currently another file is playing, please stop the file or wait until it finishes") : (localStorage.setItem("currentlyDisplaying", "record"), void (running ? (console.log("Stopping microphone, sending stop action message"), recordButton.removeAttr("style"), recordButton.css("width", "100%"), recordButton.find("img").attr("src", "/images/microphone.svg"), $.publish("hardsocketstop"), mic.stop(), running = !1, localStorage.setItem("currentlyDisplaying", "false")) : ($("#resultsText").val(""), console.log("Not running, handleMicrophone()"), handleMicrophone(token, currentModel, mic, function (err) {
+            return "sample" == currentlyDisplaying || "fileupload" == currentlyDisplaying ? void showError("Currently another file is playing, please stop the file or wait until it finishes") : (localStorage.setItem("currentlyDisplaying", "record"), void (running ? (console.log("Stopping microphone, sending stop action message"), recordButton.removeAttr("style"), recordButton.css("width", "100%"), recordButton.find("img").attr("src", "/images/microphone.svg"), $.publish("hardsocketstop"), mic.stop(), writeUserData($('#resultsText').val()), running = !1, localStorage.setItem("currentlyDisplaying", "false")) : ($("#resultsText").val(""), console.log("Not running, handleMicrophone()"), handleMicrophone(token, currentModel, mic, function (err) {
               if (err) {
                 var msg = "Error: " + err.message;
                 console.log(msg), showError(msg), running = !1, localStorage.setItem("currentlyDisplaying", "false")
