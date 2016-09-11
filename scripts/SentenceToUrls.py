@@ -5,10 +5,10 @@ from AslVideoScraper import getVideoUrl
 # if a word is not found, its corresponding URL will be None
 # returns all the URLs as a single string, separated by spaces
 def getVideoUrls(sentence):
-   words = re.sub("[^\w]", " ",  sentence).split()
+    words = re.sub("[^\w]", " ",  sentence).split()
 
-   if (len(words) == 0):
-       return None
+    if (len(words) == 0):
+        return None
 
     urls = []
     for word in words:
