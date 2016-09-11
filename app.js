@@ -101,7 +101,7 @@ dictionary.on("child_added", function (snapshot) {
 var L = [];
 links.on('value', function (snap) { 
   L = snap.val();
-  const outputName = '';
+  var outputName = '';
   if(L == null){
     outputName = 'notaword';
   }else{
@@ -145,7 +145,7 @@ app.enable('trust proxy');
 
 var config = extend({
   version: 'v1',
-  "url": "https://stream.watsonplatform.net/speech-to-`/api",
+  "url": "https://stream.watsonplatform.net/speech-to-text/api",
   "username": "f10cdd68-c1f4-4a06-96fc-ed15ab867f10",
   "password": "wZbS5lNtI5YM"
 }, vcapServices.getCredentials('speech_to_text'));
