@@ -33,7 +33,7 @@ block script
       function search()
       {
         console.log('search clicked');
-        firebase.database().ref('dictionary/word').set($('#input').val());
+        database.ref('dictionary/word').set($('#input').val());
       }
 
       $('button').click(function() {
@@ -41,12 +41,38 @@ block script
         $("#output").empty();
       });
 
-      firebase.database().ref('dictionary').on('child_changed', function(data){
+      $("#input").keyup(function(event){
+          if(event.keyCode == 13){
+              $("#button").click();
+          }
+      });
+
+      database.ref('dictionary').on('child_changed', function(data){
         console.log('change');
         console.log(data.key);
         console.log(data.val());
         if (data.key == 'link') {
-          $('#output').append('<video id="video" loop width="640" height="320" autoplay></video>');
-          $('#video').append('<source src="' + data.val() + '" type="video/mp4" />')
+          if (!data.val() || data.val() == 'None') {
+              $('#output').append('<h2>Sorry. No match.</h2>');
+          } else {
+              $('#output').append('<video id="video" loop width="640" height="320" autoplay></video>');
+              $('#video').append('<source src="' + data.val() + '" type="video/mp4" />');
+          }
+          database.ref('dictionary').remove();
         }
-      })
+      });
+
+      database.ref('dictionary').on('child_added', function(data){
+        console.log('change');
+        console.log(data.key);
+        console.log(data.val());
+        if (data.key == 'link') {
+          if (!data.val() || data.val() == 'None') {
+              $('#output').append('<h2>Sorry. No match.</h2>');
+          } else {
+              $('#output').append('<video id="video" loop width="640" height="320" autoplay></video>');
+              $('#video').append('<source src="' + data.val() + '" type="video/mp4" />');
+          }
+          database.ref('dictionary').remove();
+        }
+      });
