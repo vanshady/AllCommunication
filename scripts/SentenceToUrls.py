@@ -1,4 +1,4 @@
-import re
+import re, sys
 from AslVideoScraper import getVideoUrl
 
 # gets ASL video URLs to all words in the given sentence in order
@@ -12,7 +12,12 @@ def getVideoUrls(sentence):
 
     urls = []
     for word in words:
-        urls.append(getVideoUrl(word))
+        url = getVideoUrl(word)
+        if (url == None):
+            url = "None"
+        urls.append(url)
 
     assert(len(urls) == len(words))
     return " ".join(urls)
+
+print(getVideoUrls(sys.argv[1]))
