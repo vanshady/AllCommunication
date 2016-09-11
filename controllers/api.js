@@ -654,3 +654,9 @@ exports.getChat = (req, res, next) => {
     title: 'Chat'
   })
 };
+
+exports.getVideoChat = (req, res, next) => {
+  res.render('video', {
+    title: 'VideoChat'
+  })
+};

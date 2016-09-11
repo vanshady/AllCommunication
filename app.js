@@ -326,9 +326,7 @@ app.post('/api/speech/token', function (req, res, next) {
   });
 });
 
-// app.get('/videochat', function (req, res) {
-//   res.sendFile('/public/video/video.html');
-// });
+app.get('/api/videochat', apiController.getVideoChat);
 
 /**
  * Error Handler.
