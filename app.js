@@ -101,7 +101,7 @@ dictionary.on("child_added", function (snapshot) {
 var L = [];
 links.on('value', function (snap) { 
   L = snap.val(); 
-  const outputName = (L.join()).concat('.mp4');
+  const outputName = (L.join('')).concat('.mp4');
   var args = (['scripts/VideoMerger.sh'].concat(L)).concat([outputName]);
   console.log(args);
   const res = spawn('sh', args);
@@ -140,14 +140,12 @@ app.enable('trust proxy');
 
 var config = extend({
   version: 'v1',
-  "url": "https://stream.watsonplatform.net/speech-to-text/api",
+  "url": "https://stream.watsonplatform.net/speech-to-`/api",
   "username": "f10cdd68-c1f4-4a06-96fc-ed15ab867f10",
   "password": "wZbS5lNtI5YM"
 }, vcapServices.getCredentials('speech_to_text'));
 
 var authService = watson.authorization(config);
-
-var text = "I love you";
 
 /**
  * Connect to MongoDB.
