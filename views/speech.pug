@@ -4,18 +4,19 @@ block style
     link(href='css/style.css', rel='stylesheet')
 block content
     .row
-      .col-lg-12.col-md-12.col-sm-12
-        h2 AllCommunication
+      .col-lg-6.col-md-6.col-sm-6
+        h2
+          | AllCommunication
+          small  Speech
+      nav.navbar.navbar-inverse.col-lg-3.col-md-3.col-sm-3
+        li#recordButton.button-row.nav-inverse-color(style='width:100%', onclick='updateTimeCount()')
+          img#microphoneIcon.icon(src='images/microphone.svg')
+          span.nav-label Record Audio
       .row
         .col-lg-12.col-md-12.col-sm-12
           .audioParent
             audio.audio(style='display:none', controls='')
               | Your browser does not support the audio element.
-      .row
-        nav.navbar.navbar-inverse.col-lg-3.col-md-3.col-sm-3
-          li#recordButton.button-row.nav-inverse-color(style='width:100%', onclick='updateTimeCount()')
-            img#microphoneIcon.icon(src='images/microphone.svg')
-            span.nav-label Record Audio
       .row(style='  margin: 0;')
         .col-lg-12.col-md-12.col-sm-12(style='padding: 0;')
           .well
