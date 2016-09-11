@@ -12,6 +12,7 @@ block content
             audio.audio(style='display:none', controls='')
               | Your browser does not support the audio element.
       .row
+        //- .row(style="display:none")
         nav.navbar.navbar-inverse.col-lg-3.col-md-3.col-sm-3
           li#recordButton.button-row.nav-inverse-color(style='width:100%', onclick='updateTimeCount()')
             img#microphoneIcon.icon(src='images/microphone.svg')
@@ -21,7 +22,6 @@ block content
           .well
             form.form-horizontal(autocomplete='off')
               div(role='tabpanel')
-                .hr-tab
                 fieldset
                   .row.error-row
                     .col-lg-12
@@ -38,7 +38,7 @@ block content
                       .tab-content
                         #home2.tab-pane.active(role='tabpanel')
                           textarea#resultsText(readonly='', name='resultsText')
-                        #profile2.tab-pane(role='tabpanel')
+                        #profile2.tab-pane(role='tabpanel', style="display:none")
                           textarea#resultsJSON(readonly='')
                         .text-right.timeCountFootnote
                           span.timeCount.small
@@ -74,7 +74,9 @@ block script
         }
       }
 
-    
+      $(window).load(function() {
+        $('#recordButton').click();
+      });
     script(src="https://www.gstatic.com/firebasejs/3.3.2/firebase.js")
     script.
       // Initialize Firebase
