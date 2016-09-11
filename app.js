@@ -53,7 +53,7 @@ words.on("child_changed", function (snapshot) {
 
     python.run('./scripts/SentenceToUrls.py', options, function (err, results) {
       if (err) return err;
-      if (results[0] && results[0] != 'None') {
+      if (results[0]) {
         console.log(results);
         // var list = [];
         // links.on('value', function (snap) { list = snap.val(); });
@@ -76,7 +76,8 @@ words.on("child_added", function (snapshot) {
     console.log(options);
     python.run('./scripts/SentenceToUrls.py', options, function (err, results) {
       if (err) return err;
-      if (results[0] && results[0] != 'None') {
+      if (results[0]) {
+        conole.log('resultssssss');
         console.log(results);
         // var list = [];
         // links.on('value', function (snap) { list = snap.val(); });
