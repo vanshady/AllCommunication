@@ -38,45 +38,46 @@ html
                       img#microphoneIcon.icon(src='/images/microphone.svg')
                       span.nav-label Record Audio
 
-            //- #demoContainer
-            //- #connectControls
-            //-   #iam Not yet connected...
-            //-   br
-            //-   strong Connected users:
-            //-   #otherClients
-            #videos
-              video#selfVideo.easyrtcMirror(autoplay='autoplay', muted='muted', volume='0')
-              div(style='position:relative;float:left;display:none')
-                video#callerVideo(autoplay='autoplay')
-              // each caller video needs to be in it"s own div so it"s close button can be positioned correctly
+            
 
             .row
-                .col-lg-12.col-md-12.col-sm-12(style='padding: 0;')
-                    .well
-                      form.form-horizontal(autocomplete='off')
-                        div(role='tabpanel')
-                          .hr-tab
-                          fieldset
-                            .row.error-row
-                              .col-lg-12
-                                #errorAlert
-                                  span#errorMessage
-                                  a#errorClose.pull-right(href='#') ×
-                            .row.notification-row
-                              .col-lg-12
-                                #notificationAlert
-                                  span#notificationMessage
-                                  a#notificationClose.pull-right(href='#') ×
-                            .form-group.row.tabpanel-row
-                              .col-lg-12
-                                .tab-content
-                                  #home2.tab-pane.active(role='tabpanel')
-                                    textarea#resultsText(readonly='', name='resultsText')
-                                  #profile2.tab-pane(role='tabpanel')
-                                    textarea#resultsJSON(readonly='')
-                                  .text-right.timeCountFootnote
-                                    span.timeCount.small
-                                    span.small  
+              //- #demoContainer
+              //- #connectControls
+              //-   #iam Not yet connected...
+              //-   br
+              //-   strong Connected users:
+              //-   #otherClients
+              #videos
+                video#selfVideo.easyrtcMirror(autoplay='autoplay', muted='muted', volume='0', style='width: 75%; height: 75%; margin-left: 0 auto; margin-right: 0 auto')
+                div(style='position:relative;float:left;display:none')
+                  video#callerVideo(autoplay='autoplay')
+                // each caller video needs to be in it"s own div so it"s close button can be positioned correctly
+              .col-lg-12.col-md-12.col-sm-12(style='padding: 0;')
+                  .well
+                    form.form-horizontal(autocomplete='off')
+                      div(role='tabpanel')
+                        .hr-tab
+                        fieldset
+                          .row.error-row
+                            .col-lg-12
+                              #errorAlert
+                                span#errorMessage
+                                a#errorClose.pull-right(href='#') ×
+                          .row.notification-row
+                            .col-lg-12
+                              #notificationAlert
+                                span#notificationMessage
+                                a#notificationClose.pull-right(href='#') ×
+                          .form-group.row.tabpanel-row
+                            .col-lg-12
+                              .tab-content
+                                #home2.tab-pane.active(role='tabpanel')
+                                  textarea#resultsText(readonly='', name='resultsText', style='height: 100px')
+                                #profile2.tab-pane(role='tabpanel')
+                                  textarea#resultsJSON(readonly='')
+                                .text-right.timeCountFootnote
+                                  span.timeCount.small
+                                  span.small  
 
             include partials/footer
 
