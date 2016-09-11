@@ -3,7 +3,6 @@ import requests
 import sys
 from bs4 import BeautifulSoup
 from fake_useragent import UserAgent
-import sys
 
 # only call this method from outside
 # gets link to an ASL video of the given word, or None if word not found
