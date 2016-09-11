@@ -63,6 +63,29 @@ words.on("child_changed", function (snapshot) {
     });
   };
 });
+
+words.on("child_added", function (snapshot) {
+  var text = snapshot.val();
+  var words = text.replace(/[^\w\s]|_/g, function ($1) { return ' ' + $1 + ' '; }).replace(/[ ]+/g, ' ').split(' ');
+  for (i = 0; i < words.length; i++) {
+    var options = {
+      args: words[i]
+    };
+
+    python.run('./scripts/AslVideoScraper.py', options, function (err, results) {
+      if (err) return err;
+      if (results[0] && results[0] != 'None') {
+        console.log(results[0]);
+        var list = [];
+        links.on('value', function (snap) { list = snap.val(); });
+        if (list) list.push(results[0]);
+        else list = [results[0]];
+        links.set(list);
+      }
+    });
+  };
+});
+
 dictionary.on("child_changed", function (snapshot) {
   var text = snapshot.val();
   console.log(snapshot.key + ' ' + text);
@@ -99,7 +122,8 @@ dictionary.on("child_added", function (snapshot) {
 });
 
 var L = [];
-links.on('value', function (snap) { 
+
+var mergemp4 = function (snap) { 
   L = snap.val();
   var outputName = '';
   if(L == null){
@@ -114,8 +138,11 @@ links.on('value', function (snap) {
   res.stdout.on('data', (data) => {
     console.log('successfully wrote file');
   });
+};
 
-});
+// links.on('child_changed', mergemp4);
+// links.on('child_added', mergemp4);
+links.on('value', mergemp4)
 
 /**
  * Load environment variables from .env file, where API keys and passwords are configured.
