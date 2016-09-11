@@ -123,12 +123,14 @@ dictionary.on("child_added", function (snapshot) {
 
 var L = [];
 
-var mergemp4 = function (snap) { 
+links.on('value', function (snap) { 
   L = snap.val();
   var outputName = '';
-  if(L == null){
+  if(L == null || L.length == 0){ 
     outputName = 'notaword';
-  }else{
+  } else if (L.length == 1) {
+    outputName = L[0].concat('.mp4');
+  } else {
     outputName = (L.join('.')).concat('.mp4');
   };
   var args = (['scripts/VideoMerger.sh'].concat(L)).concat([outputName]);
@@ -137,12 +139,9 @@ var mergemp4 = function (snap) {
 
   res.stdout.on('data', (data) => {
     console.log('successfully wrote file');
+    db.ref('output_written').set('true');
   });
-};
-
-// links.on('child_changed', mergemp4);
-// links.on('child_added', mergemp4);
-links.on('value', mergemp4)
+});
 
 /**
  * Load environment variables from .env file, where API keys and passwords are configured.
