@@ -38,15 +38,15 @@ html
                       img#microphoneIcon.icon(src='/images/microphone.svg')
                       span.nav-label Record Audio
 
-            #demoContainer
-            #connectControls
-              #iam Not yet connected...
-              br
-              strong Connected users:
-              #otherClients
+            //- #demoContainer
+            //- #connectControls
+            //-   #iam Not yet connected...
+            //-   br
+            //-   strong Connected users:
+            //-   #otherClients
             #videos
               video#selfVideo.easyrtcMirror(autoplay='autoplay', muted='muted', volume='0')
-              div(style='position:relative;float:left;')
+              div(style='position:relative;float:left;display:none')
                 video#callerVideo(autoplay='autoplay')
               // each caller video needs to be in it"s own div so it"s close button can be positioned correctly
 
