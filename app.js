@@ -40,7 +40,8 @@ var words = db.ref("words");
 words.remove();
 var links = db.ref("links");
 links.remove();
-words.once("child_changed", function (snapshot) {
+var dictionary = db.ref('dictionary');
+words.on("child_changed", function (snapshot) {
   var text = snapshot.val();
   var words = text.replace(/[^\w\s]|_/g, function ($1) { return ' ' + $1 + ' '; }).replace(/[ ]+/g, ' ').split(' ');
   for (i = 0; i < words.length; i++) {
@@ -60,6 +61,23 @@ words.once("child_changed", function (snapshot) {
       }
     });
   };
+});
+dictionary.on("child_changed", function (snapshot) {
+  var text = snapshot.val();
+  console.log(snapshot.key + ' ' + text);
+  var options = {
+    args: text
+  };
+
+  if (snapshot.key == 'word') {
+      python.run('./scripts/AslVideoScraper.py', options, function (err, results) {
+        if (err) return err;
+        if (results[0]) {
+          console.log(results[0]);
+          db.ref('dictionary/link').set(results[0]);
+        }
+      });
+  }
 });
 var L = [];
 links.on('value', function (snap) { L = snap.val(); });
@@ -330,6 +348,7 @@ app.post('/api/speech/token', function (req, res, next) {
 });
 
 app.get('/api/videochat', apiController.getVideoChat);
+app.get('/api/dictionary', apiController.getDictionary);
 
 /**
  * Error Handler.

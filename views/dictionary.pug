@@ -1,0 +1,52 @@
+extends layout.pug
+block content
+    .row
+      .col-lg-12.col-md-12.col-sm-12
+        h2 AllCommunication
+      .row
+        .col-lg-12.col-md-12.col-sm-12
+          .audioParent
+            audio.audio(style='display:none', controls='')
+              | Your browser does not support the audio element.
+      .row
+        .col-lg-6
+          .input-group
+            input#input.form-control(type='text', placeholder='Search for...')
+            span.input-group-btn
+              button#button.btn.btn-default(type='button') Search
+      #output.row(style='display:block;overflow:hidden;height:280px')
+          video#video(loop, width='640', height='320', autoplay)
+
+block script
+    script(src="https://www.gstatic.com/firebasejs/3.3.2/firebase.js")
+    script.
+      // Initialize Firebase
+      var config = {
+        apiKey: "AIzaSyCt2Gn5AsmXi_GId_0pWI4Lz7SGkjOZSVM",
+        authDomain: "allcommunication-143001.firebaseapp.com",
+        databaseURL: "https://allcommunication-143001.firebaseio.com",
+        storageBucket: "allcommunication-143001.appspot.com",
+      };
+      firebase.initializeApp(config);
+      var database = firebase.database();
+
+      function search()
+      {
+        console.log('search clicked');
+        firebase.database().ref('dictionary/word').set($('#input').val());
+      }
+
+      $('button').click(function() {
+        search();
+        $("#output").empty();
+      });
+
+      firebase.database().ref('dictionary').on('child_changed', function(data){
+        console.log('change');
+        console.log(data.key);
+        console.log(data.val());
+        if (data.key == 'link') {
+          $('#output').append('<video id="video" loop width="640" height="320" autoplay></video>');
+          $('#video').append('<source src="' + data.val() + '" type="video/mp4" />')
+        }
+      })
