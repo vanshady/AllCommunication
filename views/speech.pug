@@ -99,12 +99,32 @@ block script
         });
       }
 
-      database.ref('/output_written').on('value', function(data){
-          if (data.val() == 'true') {
-              //- $('#output').append('<video id="video" loop width="640" height="320" autoplay></video>');
-              $('#video').append('<source src="/videos/ASL/output.mp4" type="video/mp4" />');
-              //- database.ref('/output_written').remove();
-              //- database.ref('/links').remove();
-              //- database.ref('/words').remove();
-          }
+      database.ref('/outputName').on('value', function(data){
+        if (data && data.val()) {
+            console.log(data.val());
+            $('#output').empty();
+            $('#output').append('<video id="video" loop width="640" height="320" autoplay></video>');
+            $('#video').append('<source src="/videos/ASL/' + data.val() +'" type="video/mp4" />');
+             $('#output').empty();
+            $('#output').append('<video id="video" loop width="640" height="320" autoplay></video>');
+            $('#video').append('<source src="/videos/ASL/' + data.val() +'" type="video/mp4" />');
+             $('#output').empty();
+            $('#output').append('<video id="video" loop width="640" height="320" autoplay></video>');
+            $('#video').append('<source src="/videos/ASL/' + data.val() +'" type="video/mp4" />');
+             $('#output').empty();
+            $('#output').append('<video id="video" loop width="640" height="320" autoplay></video>');
+            $('#video').append('<source src="/videos/ASL/' + data.val() +'" type="video/mp4" />');
+             $('#output').empty();
+            $('#output').append('<video id="video" loop width="640" height="320" autoplay></video>');
+            $('#video').append('<source src="/videos/ASL/' + data.val() +'" type="video/mp4" />');
+             $('#output').empty();
+            $('#output').append('<video id="video" loop width="640" height="320" autoplay></video>');
+            $('#video').append('<source src="/videos/ASL/' + data.val() +'" type="video/mp4" />');
+             $('#output').empty();
+            $('#output').append('<video id="video" loop width="640" height="320" autoplay></video>');
+            $('#video').append('<source src="/videos/ASL/' + data.val() +'" type="video/mp4" />');
+            database.ref('/outputName').remove();
+            //- database.ref('/links').remove();
+            //- database.ref('/words').remove();
+        }
       });

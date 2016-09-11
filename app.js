@@ -42,51 +42,50 @@ words.remove();
 var links = db.ref("links");
 links.remove();
 var dictionary = db.ref('dictionary');
-words.on("child_changed", function (snapshot) {
-  var text = snapshot.val();
-  // var words = text.replace(/[^\w\s]|_/g, function ($1) { return ' ' + $1 + ' '; }).replace(/[ ]+/g, ' ').split(' ');
 
-  // for (i = 0; i < words.length; i++) {
-    var options = {
-      args: text
-    };
 
-    python.run('./scripts/SentenceToUrls.py', options, function (err, results) {
-      if (err) return err;
-      if (results[0]) {
-        console.log(results);
-        // var list = [];
-        // links.on('value', function (snap) { list = snap.val(); });
-        // if (list) list.push(results[0]);
-        // else list = [results[0]];
-        // links.set(list);
-      }
-    });
-  // };
-});
+words.on("value", function (snapshot) {
+    var text = snapshot.val();
+    if (text) {
+      var options = {
+        args: text.word || text
+      };
+      console.log(options);
+      // var mp4counter = 0;
 
-words.on("child_added", function (snapshot) {
-  var text = snapshot.val();
-  // var words = text.replace(/[^\w\s]|_/g, function ($1) { return ' ' + $1 + ' '; }).replace(/[ ]+/g, ' ').split(' ');
+      python.run('./scripts/SentenceToUrls.py', options, function (err, results) {
+        if (err) return err;
 
-  // for (i = 0; i < words.length; i++) {
-    var options = {
-      args: text
-    };
-    console.log(options);
-    python.run('./scripts/SentenceToUrls.py', options, function (err, results) {
-      if (err) return err;
-      if (results[0]) {
-        conole.log('resultssssss');
-        console.log(results);
-        // var list = [];
-        // links.on('value', function (snap) { list = snap.val(); });
-        // if (list) list.push(results[0]);
-        // else list = [results[0]];
-        // links.set(list);
-      }
-    });
-  // };
+        if (results[0]) {
+          console.log(results);
+          var links = results[0];
+
+          
+          // mp4counter++;
+
+          function makeid()
+          {
+              var text = "";
+              var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+              for( var i=0; i < 5; i++ )
+                  text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+              return text;
+          }
+
+          var outputName = `temp${makeid()}.mp4`;
+          var args = (['scripts/VideoMerger.sh'].concat(links.split(' '))).concat([outputName]);
+          console.log(args);
+          const res = spawn('sh', args);
+
+          res.on('close', (data) => {
+            console.log('successfully wrote file');
+            db.ref('outputName').set(outputName);
+          });  
+        }
+      });
+    }
 });
 
 dictionary.on("child_changed", function (snapshot) {
@@ -124,29 +123,29 @@ dictionary.on("child_added", function (snapshot) {
   }
 });
 
-var L = [];
-var mp4counter = 0;
-links.on('value', function (snap) { 
-  // if (snap.numChildren() >= 4) {
-    L = snap.val();
-    // var outputName = '';
-    // if(L == null || L.length == 0){ 
-    //   outputName = 'notaword';
-    // } else {
-    //   outputName = ('output').concat('.mp4');
-    // };
-    var outputName = `temp${mp4counter}.mp4`;
-    mp4counter++;
-    var args = (['scripts/VideoMerger.sh'].concat(L)).concat([outputName]);
-    console.log(args);
-    const res = spawn('sh', args);
+// var L = [];
+// var mp4counter = 0;
+// links.on('value', function (snap) { 
+//   // if (snap.numChildren() >= 4) {
+//     L = snap.val();
+//     // var outputName = '';
+//     // if(L == null || L.length == 0){ 
+//     //   outputName = 'notaword';
+//     // } else {
+//     //   outputName = ('output').concat('.mp4');
+//     // };
+//     var outputName = `temp${mp4counter}.mp4`;
+//     mp4counter++;
+//     var args = (['scripts/VideoMerger.sh'].concat(L)).concat([outputName]);
+//     console.log(args);
+//     const res = spawn('sh', args);
 
-    res.stdout.on('data', (data) => {
-      console.log('successfully wrote file');
-      db.ref('output_written').set('true');
-    });
-  // }
-});
+//     res.stdout.on('data', (data) => {
+//       console.log('successfully wrote file');
+//       db.ref('output_written').set('true');
+//     });
+//   // }
+// });
 
 /**
  * Load environment variables from .env file, where API keys and passwords are configured.
