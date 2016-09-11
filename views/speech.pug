@@ -90,6 +90,7 @@ block script
       var database = firebase.database();
 
       function writeUserData(text) {
+        console.log(text + ' written');
         firebase.database().ref('words/').set({
           word: text
         });
