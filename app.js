@@ -51,7 +51,7 @@ words.on("child_changed", function (snapshot) {
       args: text
     };
 
-    python.run('./scripts/AslVideoScraper.py', options, function (err, results) {
+    python.run('./scripts/SentenceToUrls.py', options, function (err, results) {
       if (err) return err;
       if (results[0] && results[0] != 'None') {
         console.log(results);
@@ -67,24 +67,25 @@ words.on("child_changed", function (snapshot) {
 
 words.on("child_added", function (snapshot) {
   var text = snapshot.val();
-  var words = text.replace(/[^\w\s]|_/g, function ($1) { return ' ' + $1 + ' '; }).replace(/[ ]+/g, ' ').split(' ');
-  for (i = 0; i < words.length; i++) {
-    var options = {
-      args: words[i]
-    };
+  // var words = text.replace(/[^\w\s]|_/g, function ($1) { return ' ' + $1 + ' '; }).replace(/[ ]+/g, ' ').split(' ');
 
-    python.run('./scripts/AslVideoScraper.py', options, function (err, results) {
+  // for (i = 0; i < words.length; i++) {
+    var options = {
+      args: text
+    };
+    console.log(options);
+    python.run('./scripts/SentenceToUrls.py', options, function (err, results) {
       if (err) return err;
       if (results[0] && results[0] != 'None') {
-        console.log(results[0]);
-        var list = [];
-        links.on('value', function (snap) { list = snap.val(); });
-        if (list) list.push(results[0]);
-        else list = [results[0]];
-        links.set(list);
+        console.log(results);
+        // var list = [];
+        // links.on('value', function (snap) { list = snap.val(); });
+        // if (list) list.push(results[0]);
+        // else list = [results[0]];
+        // links.set(list);
       }
     });
-  };
+  // };
 });
 
 dictionary.on("child_changed", function (snapshot) {
