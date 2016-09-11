@@ -44,24 +44,25 @@ links.remove();
 var dictionary = db.ref('dictionary');
 words.on("child_changed", function (snapshot) {
   var text = snapshot.val();
-  var words = text.replace(/[^\w\s]|_/g, function ($1) { return ' ' + $1 + ' '; }).replace(/[ ]+/g, ' ').split(' ');
-  for (i = 0; i < words.length; i++) {
+  // var words = text.replace(/[^\w\s]|_/g, function ($1) { return ' ' + $1 + ' '; }).replace(/[ ]+/g, ' ').split(' ');
+
+  // for (i = 0; i < words.length; i++) {
     var options = {
-      args: words[i]
+      args: text
     };
 
     python.run('./scripts/AslVideoScraper.py', options, function (err, results) {
       if (err) return err;
       if (results[0] && results[0] != 'None') {
-        console.log(results[0]);
-        var list = [];
-        links.on('value', function (snap) { list = snap.val(); });
-        if (list) list.push(results[0]);
-        else list = [results[0]];
-        links.set(list);
+        console.log(results);
+        // var list = [];
+        // links.on('value', function (snap) { list = snap.val(); });
+        // if (list) list.push(results[0]);
+        // else list = [results[0]];
+        // links.set(list);
       }
     });
-  };
+  // };
 });
 
 words.on("child_added", function (snapshot) {
@@ -122,25 +123,27 @@ dictionary.on("child_added", function (snapshot) {
 });
 
 var L = [];
-
+var mp4counter = 0;
 links.on('value', function (snap) { 
-  L = snap.val();
-  var outputName = '';
-  if(L == null || L.length == 0){ 
-    outputName = 'notaword';
-  } else if (L.length == 1) {
-    outputName = L[0].concat('.mp4');
-  } else {
-    outputName = (L.join('.')).concat('.mp4');
-  };
-  var args = (['scripts/VideoMerger.sh'].concat(L)).concat([outputName]);
-  console.log(args);
-  const res = spawn('sh', args);
+  // if (snap.numChildren() >= 4) {
+    L = snap.val();
+    // var outputName = '';
+    // if(L == null || L.length == 0){ 
+    //   outputName = 'notaword';
+    // } else {
+    //   outputName = ('output').concat('.mp4');
+    // };
+    var outputName = `temp${mp4counter}.mp4`;
+    mp4counter++;
+    var args = (['scripts/VideoMerger.sh'].concat(L)).concat([outputName]);
+    console.log(args);
+    const res = spawn('sh', args);
 
-  res.stdout.on('data', (data) => {
-    console.log('successfully wrote file');
-    db.ref('output_written').set('true');
-  });
+    res.stdout.on('data', (data) => {
+      console.log('successfully wrote file');
+      db.ref('output_written').set('true');
+    });
+  // }
 });
 
 /**

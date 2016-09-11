@@ -43,6 +43,9 @@ block content
                         .text-right.timeCountFootnote
                           span.timeCount.small
                           span.small
+      #output.row(style='display:block;overflow:hidden;height:280px')
+          video#video(loop, width='640', height='320', autoplay)
+
 block script
     script(src="js/index.js")
 
@@ -95,3 +98,13 @@ block script
           word: text
         });
       }
+
+      database.ref('/output_written').on('value', function(data){
+          if (data.val() == 'true') {
+              //- $('#output').append('<video id="video" loop width="640" height="320" autoplay></video>');
+              $('#video').append('<source src="/videos/ASL/output.mp4" type="video/mp4" />');
+              //- database.ref('/output_written').remove();
+              //- database.ref('/links').remove();
+              //- database.ref('/words').remove();
+          }
+      });
