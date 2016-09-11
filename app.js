@@ -26,6 +26,7 @@ const bluemix = require('./config/bluemix');
 const python = require('python-shell');
 const firebase = require("firebase");  
 var easyrtc = require("easyrtc");
+const spawn = require('child_process').spawn;
 
 const firebaseConfig = {
   apiKey: "AIzaSyCt2Gn5AsmXi_GId_0pWI4Lz7SGkjOZSVM",
@@ -79,17 +80,37 @@ dictionary.on("child_changed", function (snapshot) {
       });
   }
 });
-var L = [];
-links.on('value', function (snap) { L = snap.val(); });
-const spawn = require('child_process').spawn;
-var args = (['scripts/VideoMerger.sh'].concat(L)).concat(['output.mp4']);
-const res = spawn('sh', args);
+dictionary.on("child_added", function (snapshot) {
+  var text = snapshot.val();
+  console.log(snapshot.key + ' ' + text);
+  var options = {
+    args: text
+  };
 
-res.stdout.on('data', (data) => {
-  console.log('successfully wrote file');
+  if (snapshot.key == 'word') {
+      python.run('./scripts/AslVideoScraper.py', options, function (err, results) {
+        if (err) return err;
+        if (results[0]) {
+          console.log(results[0]);
+          db.ref('dictionary/link').set(results[0]);
+        }
+      });
+  }
 });
 
-console.log("here");
+var L = [];
+links.on('value', function (snap) { 
+  L = snap.val(); 
+
+  var args = (['scripts/VideoMerger.sh'].concat(L)).concat(['output.mp4']);
+  console.log(args);
+  const res = spawn('sh', args);
+
+  res.stdout.on('data', (data) => {
+    console.log('successfully wrote file');
+  });
+
+});
 
 /**
  * Load environment variables from .env file, where API keys and passwords are configured.
