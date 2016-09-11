@@ -40,7 +40,7 @@ if ([[ $outputName == https://www.signingsavvy.com/signs/mp4/* ]]) then
     echo "[WARNING] No ouput file name specified. Outputs to output.mp4."
 fi
 
-ffmpeg -y -i "concat:${intermediates}" -c copy ../output/$outputName
+ffmpeg -y -i "concat:${intermediates}" -c copy ../public/videos/ASL/$outputName
 
 rm *.mp4
 rm intermediate_*.ts
