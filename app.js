@@ -42,7 +42,8 @@ words.remove();
 var links = db.ref("links");
 links.remove();
 var dictionary = db.ref('dictionary');
-
+dictionary.remove();
+var word = db.ref('dictionary/word');
 
 words.on("value", function (snapshot) {
     var text = snapshot.val();
@@ -56,7 +57,7 @@ words.on("value", function (snapshot) {
       python.run('./scripts/SentenceToUrls.py', options, function (err, results) {
         if (err) return err;
 
-        if (results[0]) {
+        if (results && results[0]) {
           console.log(results);
           var links = results[0];
 
@@ -88,39 +89,19 @@ words.on("value", function (snapshot) {
     }
 });
 
-dictionary.on("child_changed", function (snapshot) {
+word.on("value", function (snapshot) {
   var text = snapshot.val();
   console.log(snapshot.key + ' ' + text);
   var options = {
     args: text
   };
-
-  if (snapshot.key == 'word') {
-      python.run('./scripts/AslVideoScraper.py', options, function (err, results) {
-        if (err) return err;
-        if (results[0]) {
-          console.log(results[0]);
-          db.ref('dictionary/link').set(results[0]);
-        }
-      });
-  }
-});
-dictionary.on("child_added", function (snapshot) {
-  var text = snapshot.val();
-  console.log(snapshot.key + ' ' + text);
-  var options = {
-    args: text
-  };
-
-  if (snapshot.key == 'word') {
-      python.run('./scripts/AslVideoScraper.py', options, function (err, results) {
-        if (err) return err;
-        if (results[0]) {
-          console.log(results[0]);
-          db.ref('dictionary/link').set(results[0]);
-        }
-      });
-  }
+    python.run('./scripts/AslVideoScraper.py', options, function (err, results) {
+    if (err) return err;
+    if (results && results[0]) {
+      console.log(results[0]);
+      db.ref('dictionary/link').set(results[0]);
+    }
+  });
 });
 
 // var L = [];
