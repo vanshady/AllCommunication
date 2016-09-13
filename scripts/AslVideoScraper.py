@@ -68,3 +68,5 @@ def getWebpageSource(url):
 # checks if a given string contains only letters or apostrophes
 def isWord(word):
     return not any(c for c in word if c not in ascii_letters + "'")
+
+print(getVideoUrl(sys.argv[1]))
